@@ -3,6 +3,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['server.js', 'app/collections/links.js', 'app/collections/users.js', 'app/models/link.js', 'app/models/user.js', 'app/config.js', 'lib/request-handler.js', 'lib/utility.js', 'client/app.js', 'client/createLinkView.js', 'client/link.js', 'client/links.js', 'client/linksView.js', 'client/linkView.js', 'client/router.js' ],
+        dest: 'src/build.js',
+      },
     },
 
     mochaTest: {
@@ -10,21 +17,33 @@ module.exports = function(grunt) {
         options: {
           reporter: 'spec'
         },
-        src: ['test/**/*.js']
+        src: ['test/*.js']
       }
     },
 
     nodemon: {
       dev: {
         script: 'server.js'
-      }
+      },
+      env: {
+        PORT: '4568'
+      },
+      cwd: __dirname,
+      ignore: ['node_modules/**'],
+      watch: ['server']
     },
 
     uglify: {
+      my_target: {
+        files: {
+          'dest/output.min.js': ['src/input1.js', 'src/input2.js']
+        }
+      }
     },
 
     eslint: {
       target: [
+        'server.js', 'app/collections/links.js', 'app/collections/users.js', 'app/models/link.js', 'app/models/user.js', 'app/config.js', 'lib/request-handler.js', 'lib/utility.js', 'client/app.js', 'client/createLinkView.js', 'client/link.js', 'client/links.js', 'client/linksView.js', 'client/linkView.js', 'client/router.js'
         // Add list of files to lint here
       ]
     },
@@ -51,6 +70,7 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        command: 'git push live master'
       }
     },
   });
@@ -76,7 +96,7 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
+  grunt.registerTask('build', ['shell', 'server-dev', 'test', 'concat', 'uglify'
   ]);
 
   grunt.registerTask('upload', function(n) {
