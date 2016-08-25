@@ -8,7 +8,7 @@ module.exports = function(grunt) {
       },
       dist: {
         src: ['server.js', 'app/collections/links.js', 'app/collections/users.js', 'app/models/link.js', 'app/models/user.js', 'app/config.js', 'lib/request-handler.js', 'lib/utility.js', 'client/app.js', 'client/createLinkView.js', 'client/link.js', 'client/links.js', 'client/linksView.js', 'client/linkView.js', 'client/router.js' ],
-        dest: 'src/build.js',
+        dest: 'build.js',
       },
     },
 
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     uglify: {
       my_target: {
         files: {
-          'dest/output.min.js': ['src/input1.js', 'src/input2.js']
+          'ugly.js': ['build.js']
         }
       }
     },
@@ -70,7 +70,7 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
-        command: 'git push live master'
+        command: ['git add .', 'git commit -m "something"', 'git push live master'].join('&&')
       }
     },
   });
@@ -96,18 +96,20 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', ['shell', 'server-dev', 'test', 'concat', 'uglify'
+  grunt.registerTask('build', [ 'concat', 'uglify'
   ]);
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
+      grunt.task.run([ 'shell' ]);
       // add your production server task here
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
   });
 
-  grunt.registerTask('deploy', [
+  grunt.registerTask('deploy', [ 
+    'build', 'upload'
     // add your deploy tasks here
   ]);
 
