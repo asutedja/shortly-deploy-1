@@ -181,6 +181,7 @@ describe('', function() {
         .expect(function() {
           User.findOne({'username': 'Svnh'})
             .exec(function(err, user) {
+              //console.log('testing', user);
               expect(user.username).to.equal('Svnh');
             });
         })
@@ -195,7 +196,9 @@ describe('', function() {
           'password': 'Phillip' })
         .expect(302)
         .expect(function(res) {
+          console.log('user thing',res.headers.location);
           expect(res.headers.location).to.equal('/');
+          console.log('passed');
           request(app)
             .get('/logout')
             .expect(200);
@@ -224,6 +227,7 @@ describe('', function() {
           'password': 'Phillip' })
         .expect(302)
         .expect(function(res) {
+          console.log('do we see this', res.headers.location);
           expect(res.headers.location).to.equal('/');
         })
         .end(done);
