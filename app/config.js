@@ -16,9 +16,14 @@ db.on('error', console.error.bind(console, 'connection error:'));
 var urlSchema = new mongoose.Schema({
   url: String,
   baseUrl: String,
-  code: String,
+  code: {type: String, default: function() {
+    var shasum = crypto.createHash('sha1');
+    shasum.update(this.url);
+    return shasum.digest('hex').slice(0, 5);
+  }
+  },
   title: String,
-  visits: Number
+  visits: 0
 },
   {
     timestamps: true
@@ -27,7 +32,10 @@ var urlSchema = new mongoose.Schema({
 
 var userSchema = new mongoose.Schema({
   username: String,
-  password: String
+  password: {type: String, default: 
+
+
+  }
 },
   {
     timestamps: true
